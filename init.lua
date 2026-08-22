@@ -253,21 +253,24 @@ require("lazy").setup({
     },
   },
 
-  -- Keymap Helper
-  {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-  },
+    -- Keymap Helper
+    {
+     "folke/which-key.nvim",
+        event = "VeryLazy",
+    },
 
-  {
-    'nvim-tree/nvim-tree.lua',
-    opts = {
-        view = {
-            side = "left"
+    {
+        'nvim-tree/nvim-tree.lua',
+            opts = {
+            view = {
+                side = "left"
+            },
         },
     },
-    -- use opts = {} for passing setup options
-    -- this is equivalent to setup({}) function
+
+    {
+        "sphamba/smear-cursor.nvim",
+        opts = {smear_insert_mode = true},
     },
 })
 
