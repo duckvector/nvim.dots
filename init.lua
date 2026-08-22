@@ -17,6 +17,7 @@ opt.smartcase = true
 opt.termguicolors = true
 opt.scrolloff = 8
 opt.signcolumn = "yes"
+opt.clipboard = "unnamedplus"
 
 -- Netrw Styling
 vim.g.netrw_banner = 0
@@ -269,4 +270,5 @@ require("lazy").setup({
     -- this is equivalent to setup({}) function
     },
 })
+
 
