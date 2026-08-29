@@ -47,7 +47,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
+    vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts, { desc = "Code diagnostics"})
   end,
 })
 
@@ -110,12 +110,6 @@ require("lazy").setup({
       local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
 
-      dashboard.section.buttons.val = {
-        dashboard.button("f", "🔍  Find file", "<cmd>Telescope find_files<cr>"),
-        dashboard.button("e", "📂  Explore files", "<cmd>Ex<cr>"),
-        dashboard.button("r", "🕒  Recent files", "<cmd>Telescope oldfiles<cr>"),
-        dashboard.button("q", "❌  Quit", "<cmd>qa<cr>"),
-      }
       alpha.setup(dashboard.opts)
     end,
   },
@@ -242,7 +236,7 @@ require("lazy").setup({
     end,
   },
 
-  -- Fuzzy Finder
+  -- Fuzzy Finder (i dont use this but was on stack overflow so,)
   {
     "nvim-telescope/telescope.nvim",
     dependencies = { "nvim-lua/plenary.nvim" },
@@ -268,10 +262,19 @@ require("lazy").setup({
         },
     },
 
+    -- cursor tweaks
     {
         "sphamba/smear-cursor.nvim",
-        opts = {smear_insert_mode = true},
+            opts = {
+                smear_insert_mode = true,
+                stiffness = 0.8,                      -- 0.6      [0, 1]
+                trailing_stiffness = 0.6,             -- 0.45     [0, 1]
+            },
     },
-})
 
+    -- better comments
+    {
+        'numToStr/Comment.nvim'
+    }
+})
 
