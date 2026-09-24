@@ -31,7 +31,6 @@ opt.timeoutlen = 300
 opt.clipboard = "unnamedplus"
 opt.showmode = false -- Hide -- INSERT -- under statusline
 
--- Filetype detection for Assembly and FASM
 vim.filetype.add({
   extension = {
     asm = "asm",
@@ -64,20 +63,12 @@ keymap("n", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
 keymap("n", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
 keymap("n", "<C-l>", "<C-w>l", { desc = "Go to right window" })
 
--- Quick compile keymap for C / FASM files (<F5>)
+-- Quick compile / just or make (<F5>)
 keymap("n", "<F5>", function()
-  local ft = vim.bo.filetype
-  local file = vim.fn.expand("%")
-  local out = vim.fn.expand("%:r")
-
-  if ft == "c" then
-    vim.cmd("!gcc -Wall -Wextra -O2 " .. file .. " -o " .. out)
-  elseif ft == "fasm" or ft == "asm" then
-    vim.cmd("!fasm " .. file .. " " .. out .. " && chmod +x " .. out)
-  else
-    print("No build task configured for filetype: " .. ft)
-  end
-end, { desc = "Quick Compile (C / FASM)" })
+    vim.cmd("!just")
+    vim.cmd("!make")
+    vim.cmd("")
+end, { desc = "run just and make hoping one of them works" })
 
 -------------------------------------------------------------------------------
 -- 3. Lazy.nvim Bootstrap
@@ -96,7 +87,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -------------------------------------------------------------------------------
--- 4. Single-File Plugin Setup
+-- 4. Plugin Setup
 -------------------------------------------------------------------------------
 require("lazy").setup({
 
@@ -186,7 +177,10 @@ require("lazy").setup({
     opts = {
       open_mapping = [[<C-\>]],
       direction = "float",
-      float_opts = { border = "rounded" },
+      float_opts = { border = "" },
+    },
+    keys = {
+            { "<leader>x", "<cmd>ToggleTerm<CR>", desc= "Toggles Terminal"}
     },
   },
 
@@ -207,7 +201,7 @@ require("lazy").setup({
     opts = {},
   },
 
-  -- Smear Cursor
+  -- Smear Cursor []
   {
     "sphamba/smear-cursor.nvim",
     opts = {
@@ -218,8 +212,11 @@ require("lazy").setup({
       distance_stop_animating = 0.5,
     },
   },
-
-  -- Mini.nvim
+    {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' }
+    },
+     -- Mini.nvim
   {
     "echasnovski/mini.nvim",
     version = false,
@@ -238,8 +235,8 @@ require("lazy").setup({
         }, "\n"),
         items = {
           starter.sections.recent_files(5, false),
-          { name = "Find File", action = "Pick files", section = "Navigate" },
-          { name = "Live Grep", action = "Pick grep_live", section = "Navigate" },
+          -- { name = "Find File", action = "Pick files", section = "Navigate" },
+          -- { name = "Live Grep", action = "Pick grep_live", section = "Navigate" },
           { name = "New File", action = "enew", section = "Actions" },
           { name = "Quit Neovim", action = "qa", section = "Actions" },
         },
@@ -247,6 +244,7 @@ require("lazy").setup({
           starter.gen_hook.adding_bullet(" > "),
           starter.gen_hook.aligning("center", "center"),
         },
+            footer = "",
       })
 
       -- Mini.files
@@ -265,7 +263,12 @@ require("lazy").setup({
       require("mini.tabline").setup({ show_icons = true })
 
       -- Mini.statusline, Mini.pairs, Mini.comment
-      require("mini.statusline").setup({ use_icons = true })
+      -- require("mini.statusline").setup({ 
+      --           content = {
+      --               active = nil,
+      --               inactive = nil,
+      --           },
+      --           use_icons = true })
       require("mini.pairs").setup()
       require("mini.comment").setup()
 
@@ -291,11 +294,7 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "cpp", "asm", "make", "cmake", "lua", "vim" },
-        highlight = { enable = true },
-        indent = { enable = true },
-      })
+
     end,
   },
 
@@ -362,4 +361,71 @@ require("lazy").setup({
       },
     },
   },
+
 })
+
+ require("lualine").setup({
+  options = {
+    theme = "auto",
+    component_separators = "",
+    section_separators = "",
+    globalstatus = true,
+  },
+
+  sections = {
+    lualine_a = {
+      {
+        "mode",
+        fmt = function(str)
+          return str:sub(1, 1)
+        end,
+      },
+    },
+
+    lualine_b = {
+      {
+        "diagnostics",
+        symbols = {
+          error = "E ",
+          warn  = "W ",
+          info  = "I ",
+          hint  = "H ",
+        },
+      },
+
+      {
+        "filetype",
+        colored = false,
+      },
+
+      {
+        "filename",
+        path = 0,
+        symbols = {
+          modified = " [+]",
+          readonly = " [RO]",
+          unnamed = "[No Name]",
+        },
+      },
+    },
+
+    lualine_c = {},
+
+    lualine_x = {
+      "encoding",
+      "fileformat",
+    },
+
+    lualine_y = {},
+
+    lualine_z = {
+      "location",
+   },
+  },
+})
+
+      require("nvim-treesitter.config").setup({
+        ensure_installed = { "c", "cpp", "asm", "make", "cmake", "lua", "vim" },
+        highlight = { enable = true },
+        indent = { enable = true },
+      })
