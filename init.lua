@@ -176,7 +176,7 @@ require("lazy").setup({
     version = "*",
     opts = {
       open_mapping = [[<C-\>]],
-      direction = "float",
+      -- direction = "",
       float_opts = { border = "" },
     },
     keys = {
