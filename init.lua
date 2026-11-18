@@ -147,11 +147,6 @@ require("auto-save").setup({
         defer_save = { "InsertLeave", "TextChanged" },
     },
 
-    condition = function(buf)
-        return vim.bo[buf].modifiable
-            and vim.bo[buf].filetype ~= "gitcommit"
-    end,
-
     write_all_buffers = false,
     debounce_delay = 1000,
 })
